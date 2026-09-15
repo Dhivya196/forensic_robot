@@ -1,0 +1,145 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <xacro:include filename="inertial_macros.xacro" />
+
+    <!-- ==================== 1. LIDAR SENSOR ==================== -->
+    <joint name="laser_joint" type="fixed">
+        <parent link="chassis" />
+        <child link="laser_frame" />
+        <origin xyz="0.04 0 ${chassis_height/2 + 0.03}" rpy="0 0 0" />
+    </joint>
+
+    <link name="laser_frame">
+        <visual>
+            <geometry>
+                <cylinder radius="0.035" length="0.04" />
+            </geometry>
+            <material name="accent_blue" />
+        </visual>
+        <collision>
+            <geometry>
+                <cylinder radius="0.035" length="0.04" />
+            </geometry>
+        </collision>
+        <xacro:inertial_cylinder mass="0.12" length="0.04" radius="0.035">
+            <origin xyz="0 0 0" rpy="0 0 0" />
+        </xacro:inertial_cylinder>
+    </link>
+
+    <gazebo reference="laser_frame">
+        <material>Gazebo/Blue</material>
+        <sensor name="lidar" type="gpu_lidar">
+            <pose>0 0 0 0 0 0</pose>
+            <always_on>true</always_on>
+            <visualize>true</visualize>
+            <update_rate>10</update_rate>
+            <ray>
+                <scan>
+                    <horizontal>
+                        <samples>360</samples>
+                        <resolution>1</resolution>
+                        <min_angle>-3.14159265</min_angle>
+                        <max_angle>3.14159265</max_angle>
+                    </horizontal>
+                </scan>
+                <range>
+                    <min>0.12</min>
+                    <max>12.0</max>
+                    <resolution>0.01</resolution>
+                </range>
+                <noise>
+                    <type>gaussian</type>
+                    <mean>0.0</mean>
+                    <stddev>0.01</stddev>
+                </noise>
+            </ray>
+            <gz_frame_id>laser_frame</gz_frame_id>
+        </sensor>
+    </gazebo>
+
+    <!-- ==================== 2. PI CAMERA SENSOR ==================== -->
+    <joint name="camera_joint" type="fixed">
+        <parent link="chassis" />
+        <child link="camera_link" />
+        <origin xyz="${chassis_length/2 + 0.01} 0 ${chassis_height/4}" rpy="0 0 0" />
+    </joint>
+
+    <link name="camera_link">
+        <visual>
+            <geometry>
+                <box size="0.015 0.030 0.030" />
+            </geometry>
+            <material name="sensor_grey" />
+        </visual>
+        <collision>
+            <geometry>
+                <box size="0.015 0.030 0.030" />
+            </geometry>
+        </collision>
+        <xacro:inertial_box mass="0.02" x="0.015" y="0.030" z="0.030">
+            <origin xyz="0 0 0" rpy="0 0 0" />
+        </xacro:inertial_box>
+    </link>
+
+    <!-- Camera optical frame standard (z-forward, x-right, y-down) -->
+    <joint name="camera_optical_joint" type="fixed">
+        <parent link="camera_link" />
+        <child link="camera_optical_link" />
+        <origin xyz="0 0 0" rpy="-${pi/2} 0 -${pi/2}" />
+    </joint>
+
+    <link name="camera_optical_link" />
+
+    <gazebo reference="camera_link">
+        <material>Gazebo/Grey</material>
+        <sensor name="camera" type="camera">
+            <pose>0 0 0 0 0 0</pose>
+            <always_on>true</always_on>
+            <visualize>true</visualize>
+            <update_rate>30</update_rate>
+            <camera>
+                <horizontal_fov>1.15</horizontal_fov>
+                <image>
+                    <width>640</width>
+                    <height>480</height>
+                    <format>R8G8B8</format>
+                </image>
+                <clip>
+                    <near>0.05</near>
+                    <far>20.0</far>
+                </clip>
+            </camera>
+            <gz_frame_id>camera_optical_link</gz_frame_id>
+        </sensor>
+    </gazebo>
+
+    <!-- ==================== 3. IMU SENSOR ==================== -->
+    <joint name="imu_joint" type="fixed">
+        <parent link="chassis" />
+        <child link="imu_link" />
+        <origin xyz="0 0 0" rpy="0 0 0" />
+    </joint>
+
+    <link name="imu_link">
+        <visual>
+            <geometry>
+                <box size="0.02 0.02 0.005" />
+            </geometry>
+            <material name="sensor_grey" />
+        </visual>
+        <xacro:inertial_box mass="0.01" x="0.02" y="0.02" z="0.005">
+            <origin xyz="0 0 0" rpy="0 0 0" />
+        </xacro:inertial_box>
+    </link>
+
+    <gazebo reference="imu_link">
+        <sensor name="imu_sensor" type="imu">
+            <always_on>true</always_on>
+            <update_rate>50</update_rate>
+            <visualize>false</visualize>
+            <gz_frame_id>imu_link</gz_frame_id>
+        </sensor>
+    </gazebo>
+
+</robot>

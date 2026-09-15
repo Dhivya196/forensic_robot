@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="forensic_robot">
+
+    <!-- Core robot description (chassis, 4 wheels, base_footprint, base_link) -->
+    <xacro:include filename="robot_core.xacro" />
+
+    <!-- Sensor links & Gazebo sensors (LiDAR, Camera, IMU) -->
+    <xacro:include filename="sensors.xacro" />
+
+    <!-- Gazebo plugins (DiffDrive, JointStatePublisher) -->
+    <xacro:include filename="gazebo_control.xacro" />
+
+</robot>
