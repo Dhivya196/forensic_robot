@@ -37,6 +37,7 @@ setup(
             'motor_controller = forensic_robot.motor_controller:main',
             'evidence_capture = forensic_robot.evidence_capture:main',
             'l298n_driver = forensic_robot.l298n_driver:main',
+            'test_motors = forensic_robot.test_motors:main',
             'evidence_logger = forensic_robot.evidence_logger:main',
             'vision_detector = forensic_robot.vision_detector:main',
             'active_repositioner = forensic_robot.active_repositioner:main',

@@ -4,12 +4,19 @@ from geometry_msgs.msg import Twist
 
 
 class MotorController(Node):
+    """
+    Simulation & Kinematics Testing Node (Hardware-Independent).
+    Listens to /cmd_vel, calculates differential-drive wheel angular velocities,
+    and logs kinematic telemetry for testing without accessing physical GPIO.
+    
+    NOTE: For physical hardware motor control on Raspberry Pi + L298N,
+          use the dedicated node: forensic_robot.l298n_driver.
+    """
     def __init__(self):
         super().__init__('motor_controller')
 
         # 65 mm wheel -> radius 0.0325 m
         self.declare_parameter('wheel_radius', 0.0325)
-        # Measure your actual left-right wheel spacing later.
         self.declare_parameter('wheel_base', 0.20)
 
         self.r = float(self.get_parameter('wheel_radius').value)
@@ -20,7 +27,7 @@ class MotorController(Node):
         )
 
         self.get_logger().info(
-            'Motor controller ready. GPIO output is disabled.'
+            'Simulation Motor Controller ready (Kinematics Logger). GPIO output is disabled.'
         )
 
     def cmd_vel_callback(self, msg):
